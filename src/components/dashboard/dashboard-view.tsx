@@ -6,6 +6,7 @@ import { AlertList } from "@/components/dashboard/alert-list";
 import { FactoryStatusBanner } from "@/components/dashboard/factory-status-banner";
 import { MetricCard } from "@/components/dashboard/metric-card";
 import { OrdersOverviewTable } from "@/components/dashboard/orders-overview-table";
+import { ProcessLifecycleSummary } from "@/components/dashboard/process-lifecycle-summary";
 import { ProductionTrendChart } from "@/components/dashboard/production-trend-chart";
 import { SectorMonitoringGrid } from "@/components/dashboard/sector-monitoring-grid";
 import { ReportExportActions } from "@/components/shared/report-export-actions";
@@ -83,6 +84,7 @@ export function DashboardView() {
     >
       <div className="space-y-4">
         <FactoryStatusBanner snapshot={snapshot} />
+        <ProcessLifecycleSummary stages={snapshot.processStages} />
 
         <section className="grid gap-4 xl:grid-cols-[1.55fr_1fr]">
           <div className="grid gap-4 md:grid-cols-2 2xl:grid-cols-4">

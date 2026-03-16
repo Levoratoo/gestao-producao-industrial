@@ -1,4 +1,5 @@
 ﻿import type { ProductionSnapshot, SectorKey } from "./types";
+import { enrichProductionSnapshotWithWorkflow } from "./workflow";
 
 const anchorDate = new Date("2026-03-16T14:20:00-03:00");
 
@@ -17,7 +18,7 @@ export const sectorSequence: SectorKey[] = [
 ];
 
 export function createInitialProductionSnapshot(): ProductionSnapshot {
-  return {
+  return enrichProductionSnapshotWithWorkflow({
     tick: 0,
     scenarioKey: "turno_estavel",
     currentTime: anchorDate.toISOString(),
@@ -447,6 +448,7 @@ export function createInitialProductionSnapshot(): ProductionSnapshot {
         number: "OP-240316-01",
         productId: "prod-01",
         productName: "Camiseta basica",
+        customerName: "Magazine Aurora",
         lineId: "line-costura-01",
         plannedQuantity: 3200,
         producedQuantity: 1880,
@@ -463,6 +465,7 @@ export function createInitialProductionSnapshot(): ProductionSnapshot {
         number: "OP-240316-02",
         productId: "prod-02",
         productName: "Polo masculina",
+        customerName: "Grupo Varejo Sul",
         lineId: "line-costura-02",
         plannedQuantity: 1800,
         producedQuantity: 1395,
@@ -479,6 +482,7 @@ export function createInitialProductionSnapshot(): ProductionSnapshot {
         number: "OP-240316-03",
         productId: "prod-03",
         productName: "Moletom feminino",
+        customerName: "Rede Perfil",
         lineId: "line-acab-01",
         plannedQuantity: 950,
         producedQuantity: 428,
@@ -495,6 +499,7 @@ export function createInitialProductionSnapshot(): ProductionSnapshot {
         number: "OP-240316-04",
         productId: "prod-04",
         productName: "Calca de uniforme",
+        customerName: "Uniformes Prisma",
         lineId: "line-exp-01",
         plannedQuantity: 2600,
         producedQuantity: 2335,
@@ -511,6 +516,7 @@ export function createInitialProductionSnapshot(): ProductionSnapshot {
         number: "OP-240316-05",
         productId: "prod-05",
         productName: "Jaqueta leve",
+        customerName: "Atacado Horizonte",
         lineId: "line-corte-01",
         plannedQuantity: 720,
         producedQuantity: 126,
@@ -527,6 +533,7 @@ export function createInitialProductionSnapshot(): ProductionSnapshot {
         number: "OP-240315-17",
         productId: "prod-01",
         productName: "Camiseta basica",
+        customerName: "Loja Norte",
         lineId: "line-exp-01",
         plannedQuantity: 1500,
         producedQuantity: 1500,
@@ -651,5 +658,8 @@ export function createInitialProductionSnapshot(): ProductionSnapshot {
         reason: "Aguardando reposicao de aviamento.",
       },
     ],
-  };
+    processStages: [],
+    orderFlows: [],
+    shipmentManifests: [],
+  });
 }

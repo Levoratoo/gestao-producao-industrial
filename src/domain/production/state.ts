@@ -5,6 +5,7 @@ import type {
   ProductionSector,
   SectorKey,
 } from "./types";
+import { enrichProductionSnapshotWithWorkflow } from "./workflow";
 
 const alertHistoryLimit = 32;
 
@@ -14,10 +15,10 @@ export function normalizeProductionSnapshot(
   const base = createInitialProductionSnapshot();
 
   if (!snapshot) {
-    return withAlertCounts(base);
+    return enrichProductionSnapshotWithWorkflow(withAlertCounts(base));
   }
 
-  return withAlertCounts({
+  return enrichProductionSnapshotWithWorkflow(withAlertCounts({
     ...base,
     ...snapshot,
     products: mergeCollection(base.products, snapshot.products, "id"),
@@ -34,7 +35,7 @@ export function normalizeProductionSnapshot(
     ),
     hourlyProduction: snapshot.hourlyProduction ?? base.hourlyProduction,
     manualEntries: snapshot.manualEntries ?? base.manualEntries,
-  });
+  }));
 }
 
 export function reconcileAlertTimeline(

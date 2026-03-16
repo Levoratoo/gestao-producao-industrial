@@ -6,6 +6,7 @@ import type {
   ProductionSector,
   ProductionSnapshot,
 } from "./types";
+import { enrichProductionSnapshotWithWorkflow } from "./workflow";
 
 export const productionScenarioPresets: ProductionScenarioPreset[] = [
   {
@@ -67,7 +68,7 @@ export function applyScenarioPreset(
     ).toFixed(4),
   );
 
-  return {
+  return enrichProductionSnapshotWithWorkflow({
     ...snapshot,
     scenarioKey,
     dailyProduced: nextDailyProduced,
@@ -89,7 +90,7 @@ export function applyScenarioPreset(
     orders: nextOrders,
     sectors: nextSectors,
     alerts: nextAlerts,
-  };
+  });
 }
 
 function updateOrderForScenario(

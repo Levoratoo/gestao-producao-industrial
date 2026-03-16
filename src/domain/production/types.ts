@@ -1,4 +1,12 @@
 export type SectorKey = "corte" | "costura" | "acabamento" | "expedicao";
+export type WorkflowStageKey =
+  | "desenho_tecnico"
+  | "corte"
+  | "estamparia"
+  | "qualidade"
+  | "expedicao"
+  | "faturamento"
+  | "embarque";
 export type SimulationSpeedKey = "slow" | "normal" | "fast";
 export type DemoScenarioKey =
   | "turno_estavel"
@@ -6,6 +14,18 @@ export type DemoScenarioKey =
   | "parada_critica";
 
 export type SectorStatus = "operando" | "atencao" | "parado" | "setup";
+export type WorkflowStageStatus =
+  | "aguardando"
+  | "em_andamento"
+  | "bloqueada"
+  | "pronta"
+  | "concluida";
+export type WorkflowLane =
+  | "engenharia"
+  | "producao"
+  | "qualidade"
+  | "logistica"
+  | "financeiro";
 
 export type OrderStatus =
   | "em_andamento"
@@ -33,6 +53,18 @@ export type ManualEntryAction =
   | "finalizar_etapa";
 
 export type ManualQualityCategory = "defeito" | "retrabalho";
+export type WorkflowDocumentStatus =
+  | "pendente"
+  | "em_revisao"
+  | "liberado"
+  | "emitido";
+export type RouteHealth = "on_track" | "warning" | "critical";
+export type ShipmentStatus =
+  | "aguardando_minuta"
+  | "pronto_para_faturar"
+  | "faturado"
+  | "em_carregamento"
+  | "despachado";
 
 export interface Product {
   id: string;
@@ -76,6 +108,7 @@ export interface ProductionOrder {
   number: string;
   productId: string;
   productName: string;
+  customerName?: string;
   lineId: string;
   plannedQuantity: number;
   producedQuantity: number;
@@ -152,6 +185,92 @@ export interface ProductionManualEntry {
   note?: string;
 }
 
+export interface WorkflowDocument {
+  id: string;
+  label: string;
+  status: WorkflowDocumentStatus;
+  owner: string;
+  reference?: string;
+  updatedAt: string;
+}
+
+export interface OrderWorkflowStage {
+  key: WorkflowStageKey;
+  label: string;
+  lane: WorkflowLane;
+  status: WorkflowStageStatus;
+  progress: number;
+  ownerTeam: string;
+  leadTimeHours: number;
+  slaHours: number;
+  queueUnits: number;
+  completedUnits: number;
+  updatedAt: string;
+  note: string;
+  blockers: string[];
+  documents: WorkflowDocument[];
+}
+
+export interface OrderProcessFlow {
+  orderId: string;
+  orderNumber: string;
+  productName: string;
+  customerName: string;
+  priority: ProductionOrder["priority"];
+  plannedQuantity: number;
+  deliveredQuantity: number;
+  dueDate: string;
+  currentStage: WorkflowStageKey;
+  currentStageLabel: string;
+  overallCompletion: number;
+  routeHealth: RouteHealth;
+  blockers: string[];
+  stages: OrderWorkflowStage[];
+  invoiceNumber?: string;
+  manifestNumber?: string;
+  truckPlate?: string;
+  loadingDock?: string;
+  expectedDispatchAt?: string;
+}
+
+export interface ProcessStageOverview {
+  key: WorkflowStageKey;
+  label: string;
+  shortLabel: string;
+  lane: WorkflowLane;
+  ownerTeam: string;
+  status: WorkflowStageStatus;
+  activeOrders: number;
+  queuedOrders: number;
+  backlogUnits: number;
+  completedUnits: number;
+  efficiency: number;
+  leadTimeHours: number;
+  slaHours: number;
+  alertCount: number;
+  pendingDocuments: number;
+  bottleneckSummary: string;
+  nextStage?: WorkflowStageKey;
+}
+
+export interface ShipmentManifest {
+  id: string;
+  orderId: string;
+  orderNumber: string;
+  customerName: string;
+  invoiceNumber?: string;
+  manifestNumber?: string;
+  truckPlate?: string;
+  carrierName: string;
+  driverName: string;
+  dock: string;
+  status: ShipmentStatus;
+  expectedDepartureAt: string;
+  updatedAt: string;
+  packages: number;
+  weightKg: number;
+}
+
 export interface StartOrderPayload {
   orderId: string;
   operatorId: string;
@@ -210,6 +329,9 @@ export interface ProductionSnapshot {
   machines: ProductionMachine[];
   hourlyProduction: HourlyProductionPoint[];
   manualEntries: ProductionManualEntry[];
+  processStages: ProcessStageOverview[];
+  orderFlows: OrderProcessFlow[];
+  shipmentManifests: ShipmentManifest[];
 }
 
 export interface ProductionScenarioPreset {

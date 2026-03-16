@@ -11,7 +11,7 @@
     "backend:dev": "npm --prefix backend run dev",
     "backend:build": "npm --prefix backend run build",
     "backend:start": "npm --prefix backend run start",
-    "lint": "eslint",
+    "lint": "eslint . --ignore-pattern backend/dist/**",
     "test": "vitest run",
     "verify:pages": "npm run build:pages",
     "verify:sync": "npm --prefix backend run verify:sync",

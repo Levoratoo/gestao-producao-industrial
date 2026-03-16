@@ -13,6 +13,7 @@ import type {
   SectorKey,
   StartOrderPayload,
 } from "./types";
+import { enrichProductionSnapshotWithWorkflow } from "./workflow";
 
 const manualEntriesLimit = 18;
 const alertLimit = 10;
@@ -462,7 +463,7 @@ function recalculateSnapshot(snapshot: ProductionSnapshot): ProductionSnapshot {
     1,
   );
 
-  return {
+  return enrichProductionSnapshotWithWorkflow({
     ...snapshot,
     projectedCompletion: Math.min(
       103,
@@ -475,7 +476,7 @@ function recalculateSnapshot(snapshot: ProductionSnapshot): ProductionSnapshot {
     ),
     connectedOperators: calculateConnectedOperators(sectorsWithAlerts),
     sectors: sectorsWithAlerts,
-  };
+  });
 }
 
 function prependManualEntry(

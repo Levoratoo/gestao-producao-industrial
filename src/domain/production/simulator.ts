@@ -10,6 +10,7 @@ import type {
   SectorKey,
   SectorStatus,
 } from "./types";
+import { enrichProductionSnapshotWithWorkflow } from "./workflow";
 
 const tickIntervalInMinutes = 5;
 
@@ -99,7 +100,7 @@ export function advanceProductionSimulation(
     Math.round((dailyProduced / snapshot.dailyTarget) * 100),
   );
 
-  return {
+  return enrichProductionSnapshotWithWorkflow({
     ...snapshot,
     tick: nextTick,
     currentTime: nextTime,
@@ -116,7 +117,7 @@ export function advanceProductionSimulation(
       nextTime,
       Math.max(8, Math.round(finishedIncrement * 0.9)),
     ),
-  };
+  });
 }
 
 function evolveOrder(

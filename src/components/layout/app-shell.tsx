@@ -6,6 +6,7 @@ import {
   Bell,
   ClipboardList,
   Factory,
+  GitBranch,
   LayoutDashboard,
   PencilRuler,
   ScanLine,
@@ -40,6 +41,12 @@ const navigationItems = [
     label: "Apontamentos",
     description: "Lancamentos manuais",
     icon: PencilRuler,
+  },
+  {
+    href: "/fluxo",
+    label: "Fluxo",
+    description: "Do tecnico ao embarque",
+    icon: GitBranch,
   },
   {
     href: "/setores",

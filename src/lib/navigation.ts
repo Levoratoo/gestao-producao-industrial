@@ -1,4 +1,5 @@
 import type { ProductionAlert, SectorKey } from "@/domain/production/types";
+import type { WorkflowStageKey } from "@/domain/production/types";
 
 type OrdersRouteParams = {
   orderId?: string;
@@ -14,6 +15,11 @@ type AlertsRouteParams = {
 
 type SectorsRouteParams = {
   sector?: SectorKey;
+  orderId?: string;
+};
+
+type FlowRouteParams = {
+  stage?: WorkflowStageKey;
   orderId?: string;
 };
 
@@ -36,6 +42,13 @@ export function buildAlertsHref(params: AlertsRouteParams = {}) {
 export function buildSectorsHref(params: SectorsRouteParams = {}) {
   return buildHref("/setores", {
     sector: params.sector,
+    orderId: params.orderId,
+  });
+}
+
+export function buildFlowHref(params: FlowRouteParams = {}) {
+  return buildHref("/fluxo", {
+    stage: params.stage,
     orderId: params.orderId,
   });
 }
