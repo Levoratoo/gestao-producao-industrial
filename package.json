@@ -3,24 +3,40 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "next dev",
-    "build": "next build",
-    "start": "next start",
-    "lint": "eslint"
+    "prepare:runtime-config": "node scripts/generate-runtime-config.mjs",
+    "dev": "node scripts/run-next.mjs dev",
+    "build": "node scripts/run-next.mjs build",
+    "build:pages": "cross-env STATIC_EXPORT=true GITHUB_PAGES=true NEXT_PUBLIC_APP_RUNTIME=client node scripts/run-next.mjs build",
+    "start": "node scripts/run-next.mjs start",
+    "backend:dev": "npm --prefix backend run dev",
+    "backend:build": "npm --prefix backend run build",
+    "backend:start": "npm --prefix backend run start",
+    "lint": "eslint",
+    "test": "vitest run",
+    "verify:pages": "npm run build:pages",
+    "verify:sync": "npm --prefix backend run verify:sync",
+    "verify:production": "npm run lint && npm test && npm run build && npm run build:pages && npm --prefix backend run check && npm --prefix backend run build",
+    "verify:github": "npm run build:pages"
   },
   "dependencies": {
+    "jspdf": "^4.2.0",
+    "jspdf-autotable": "^5.0.7",
+    "lucide-react": "^0.577.0",
     "next": "16.1.6",
     "react": "19.2.3",
-    "react-dom": "19.2.3"
+    "react-dom": "19.2.3",
+    "zod": "^4.3.6"
   },
   "devDependencies": {
     "@tailwindcss/postcss": "^4",
     "@types/node": "^20",
     "@types/react": "^19",
     "@types/react-dom": "^19",
+    "cross-env": "^10.1.0",
     "eslint": "^9",
     "eslint-config-next": "16.1.6",
     "tailwindcss": "^4",
-    "typescript": "^5"
+    "typescript": "^5",
+    "vitest": "^4.1.0"
   }
 }

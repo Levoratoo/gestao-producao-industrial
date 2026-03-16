@@ -1,0 +1,83 @@
+services:
+  postgres:
+    image: postgres:16-alpine
+    container_name: gestao-producao-postgres
+    environment:
+      POSTGRES_DB: gestao_producao_industrial
+      POSTGRES_USER: app
+      POSTGRES_PASSWORD: app
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U app -d gestao_producao_industrial"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+
+  backend:
+    build:
+      context: .
+      dockerfile: backend/Dockerfile
+    container_name: gestao-producao-backend
+    environment:
+      NODE_ENV: production
+      BACKEND_PORT: 4013
+      DATABASE_URL: postgresql://app:app@postgres:5432/gestao_producao_industrial
+      DATABASE_SSL: "false"
+      FRONTEND_URL: http://localhost:3013
+      CORS_ALLOWED_ORIGINS: http://localhost:3013
+      SYNC_INTERVAL_MS: 4000
+      LOG_LEVEL: info
+      APP_VERSION: 0.1.0
+    depends_on:
+      postgres:
+        condition: service_healthy
+    ports:
+      - "4013:4013"
+    healthcheck:
+      test:
+        [
+          "CMD",
+          "node",
+          "-e",
+          "fetch('http://127.0.0.1:4013/api/health').then((response)=>process.exit(response.ok?0:1)).catch(()=>process.exit(1))",
+        ]
+      interval: 15s
+      timeout: 5s
+      retries: 10
+      start_period: 20s
+
+  frontend:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: gestao-producao-frontend
+    environment:
+      NODE_ENV: production
+      PORT: 3013
+      NEXT_PUBLIC_APP_RUNTIME: remote
+      NEXT_PUBLIC_API_URL: http://localhost:4013
+      NEXT_PUBLIC_FRONTEND_URL: http://localhost:3013
+      NEXT_PUBLIC_SYNC_TRANSPORT: auto
+    depends_on:
+      backend:
+        condition: service_healthy
+    ports:
+      - "3013:3013"
+    healthcheck:
+      test:
+        [
+          "CMD",
+          "node",
+          "-e",
+          "fetch('http://127.0.0.1:3013/health.json').then((response)=>process.exit(response.ok?0:1)).catch(()=>process.exit(1))",
+        ]
+      interval: 15s
+      timeout: 5s
+      retries: 10
+      start_period: 25s
+
+volumes:
+  postgres_data:
