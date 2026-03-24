@@ -131,6 +131,18 @@ function evolveOrder(
     return { ...order, lastUpdate: nextTime };
   }
 
+  const cadenceStartTick = index * 3;
+  if (tick < cadenceStartTick) {
+    return {
+      ...order,
+      producedQuantity: 0,
+      currentSector: "corte",
+      status: "em_andamento",
+      defectRate: clampNumber(order.defectRate - 0.01, 0.8, 3.4),
+      lastUpdate: nextTime,
+    };
+  }
+
   const isMaterialBlocked = order.number === "OP-240316-05" && events.materialHold;
   const isDueSoonDelay =
     order.number === "OP-240316-02" && (events.acabamentoRetrabalho || events.expedicaoQueue);
@@ -144,9 +156,10 @@ function evolveOrder(
   let increment = 0;
   if (!shouldPause) {
     const profile = sectorProfiles[order.currentSector];
-    const variance = seededVariance(tick + index * 3 + order.plannedQuantity);
+    const cadenceTicks = tick - cadenceStartTick;
+    const rampFactor = clampNumber(0.45 + cadenceTicks * 0.08, 0.45, 1);
     const rawIncrement =
-      profile.minIncrement + variance * (profile.maxIncrement - profile.minIncrement);
+      ((profile.minIncrement + profile.maxIncrement) / 2) * rampFactor;
     const penalty =
       order.currentSector === "costura" && events.costuraSlowdown
         ? 0.45
