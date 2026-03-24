@@ -73,7 +73,7 @@ function buildDashboardReport(snapshot: ProductionSnapshot) {
 
   return {
     title: "Relatorio Dashboard Industrial",
-    fileName: `dashboard-rosa-maria-${snapshot.currentTime.slice(0, 10)}`,
+    fileName: `dashboard-producao-industrial-${snapshot.currentTime.slice(0, 10)}`,
     sections: [
       {
         title: "Resumo executivo",
@@ -128,7 +128,7 @@ function buildDashboardReport(snapshot: ProductionSnapshot) {
 function buildOrdersReport(orders: ProductionOrder[], currentTime: string) {
   return {
     title: "Relatorio de Ordens de Producao",
-    fileName: `ordens-rosa-maria-${currentTime.slice(0, 10)}`,
+    fileName: `ordens-producao-industrial-${currentTime.slice(0, 10)}`,
     sections: [
       {
         title: "Carteira filtrada",
@@ -165,7 +165,7 @@ function buildAlertsReport(
 ) {
   return {
     title: "Relatorio de Alertas Operacionais",
-    fileName: `alertas-rosa-maria-${new Date().toISOString().slice(0, 10)}`,
+    fileName: `alertas-producao-industrial-${new Date().toISOString().slice(0, 10)}`,
     sections: [
       {
         title: "Alertas ativos",
@@ -232,7 +232,7 @@ async function downloadPdf(
   doc.text(title, 40, 36);
   doc.setFont("helvetica", "normal");
   doc.setFontSize(10);
-  doc.text("Rosa Maria Industrial", 40, 54);
+  doc.text("Industrial Têxtil", 40, 54);
 
   let currentY = 72;
 

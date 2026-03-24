@@ -2,7 +2,7 @@ import { createInitialProductionSnapshot } from "@/domain/production/mock-data";
 import { normalizeProductionSnapshot } from "@/domain/production/state";
 import type { ProductionSnapshot } from "@/domain/production/types";
 
-const storageKey = "rosa-maria.production.snapshot.v1";
+const storageKey = "producao-industrial.production.snapshot.v1";
 
 export interface ProductionRepository {
   hasSnapshot: () => boolean;
